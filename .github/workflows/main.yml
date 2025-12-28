@@ -34,7 +34,7 @@ jobs:
     - name: Install Pillow
       run: pip install pillow
     - name: Show pip list
-      run: pip run pip list
+      run: pip list
   
     - run: pyinstaller reset_options.py --onefile --icon=icon.ico
     # Optionally verify that it works (provided that it does not need user interaction)
