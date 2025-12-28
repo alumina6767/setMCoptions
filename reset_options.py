@@ -3,6 +3,7 @@
 import tkinter.filedialog
 import json
 from os import path
+import sys
 
 # 起動構成のフォルダ
 GAME_DIR = ".minecraft"
@@ -10,7 +11,7 @@ if not path.exists(GAME_DIR):
     GAME_DIR = "minecraft"
     if not path.exists(GAME_DIR):
         print("起動構成のフォルダを見つけません。.minecraftやminecraftフォルダと同じ階層に配置してください。")
-        exit()
+        sys.exit()
 
 
 def remove_options_without_key_bind(d):

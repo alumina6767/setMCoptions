@@ -21,7 +21,6 @@ jobs:
         python-version: 3.13
 
     - run: pip install pipenv
-    - run: pipenv install pyinstaller
 
     # pyinstallerのインストール
     - name: Install Pyinstaller
@@ -35,7 +34,9 @@ jobs:
 
     - name: Install Pillow
       run: pipenv install pillow
-
+    - name: Show pip list
+      run: pipenv run pip list
+  
     - run: pipenv run pyinstaller reset_options.py --onefile --icon=icon.ico
     # Optionally verify that it works (provided that it does not need user interaction)
     - uses: actions/upload-artifact@v4.6.2
