@@ -11,6 +11,7 @@ if not path.exists(GAME_DIR):
     GAME_DIR = "minecraft"
     if not path.exists(GAME_DIR):
         print("起動構成のフォルダを見つけません。.minecraftやminecraftフォルダと同じ階層に配置してください。")
+        input()
         sys.exit()
 
 
