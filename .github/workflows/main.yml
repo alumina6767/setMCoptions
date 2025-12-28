@@ -20,22 +20,23 @@ jobs:
       with:
         python-version: 3.13
 
-    - run: pip install pipenv
-
     # pyinstallerのインストール
     - name: Install Pyinstaller
       run: |
         git clone https://github.com/pyinstaller/pyinstaller.git
         cd pyinstaller/bootloader
-        pipenv run python ./waf distclean all
+        python ./waf distclean all
+        pip install wheel
         cd ..
-        pipenv run pip install .
+        pip install .
         cd ~
 
     - name: Install Pillow
-      run: pipenv install pillow
-
-    - run: pipenv run pyinstaller reset_options.py --onefile --icon=icon.ico
+      run: pip install pillow
+    - name: Show pip list
+      run: pip list
+  
+    - run: pyinstaller reset_options.py --onefile --icon=icon.ico
     # Optionally verify that it works (provided that it does not need user interaction)
     - uses: actions/upload-artifact@v4.6.2
       with:
