@@ -10,7 +10,7 @@ GAME_DIR = ".minecraft"
 if not path.exists(GAME_DIR):
     GAME_DIR = "minecraft"
     if not path.exists(GAME_DIR):
-        print("起動構成のフォルダを見つけません。.minecraftやminecraftフォルダと同じ階層に配置してください。")
+        print("起動構成のフォルダを見つけません。.minecraftやminecraftフォルダと同じ階層に配置してください")
         input()
         sys.exit()
 
@@ -147,13 +147,19 @@ def update_properties_file(file_path, file_reset):
 # 設定対象を読み込む
 print("読み込む設定ファイルを選択してください")
 
+if getattr(sys, 'frozen', False):
+    application_path = path.dirname(sys.executable)
+elif __file__:
+    application_path = path.dirname(__file__)
+
 SETTINGS = None
 SETTINGS = tkinter.filedialog.askopenfilename(
-    typevariable="json", initialdir=path.abspath(path.dirname(__file__)))
+    typevariable="json", initialdir=path.abspath(application_path))
 
 if SETTINGS == "":
     print("ファイルが指定されませんでした")
-    exit()
+    input()
+    sys.exit()
 
 print(f"読み込む設定ファイル: {SETTINGS}")
 
