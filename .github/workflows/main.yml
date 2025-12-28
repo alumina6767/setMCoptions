@@ -21,6 +21,7 @@ jobs:
         python-version: 3.13
 
     - run: pip install pipenv
+    - run: pipenv shell  
 
     # pyinstallerのインストール
     - name: Install Pyinstaller
