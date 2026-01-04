@@ -105,7 +105,11 @@ def update_json_file(file_path, file_reset):
     # 現在の設定の読み込み
     if not file_reset:
         with open(file_path, "r", encoding="utf-8") as f:
-            new_options = json.load(f)
+            try: 
+                new_options = json.load(f)
+            except json.JSONDecodeError:
+                new_options = {}
+                print(f"{file_path} の読み込みに失敗しました ファイルをリセットします")
 
     # 設定をリセット
     else:
