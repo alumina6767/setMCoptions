@@ -2,7 +2,7 @@
 
 import tkinter.filedialog
 import json
-from os import path
+from os import path, makedirs
 import sys
 
 # 起動構成のフォルダ
@@ -45,6 +45,7 @@ def check_exists(file_path):
 
     if not path.exists(file_path):
         print(f"{file_path} は存在しません")
+        makedirs(path.dirname(file_path), exist_ok=True)
         with open(file_path, "w", encoding="utf-8") as f:
             f.write("")
         print(f"{file_path} を作成しました")
