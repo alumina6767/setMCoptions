@@ -5,33 +5,24 @@ import json
 from os import path, makedirs
 import sys
 
-# 起動構成のフォルダ
-GAME_DIR = ".minecraft"
-if not path.exists(GAME_DIR):
-    GAME_DIR = "minecraft"
-    if not path.exists(GAME_DIR):
-        print("起動構成のフォルダを見つけません。.minecraftやminecraftフォルダと同じ階層に配置してください")
-        input()
-        sys.exit()
-
 
 def remove_options_without_key_bind(d):
     """ キーバインド以外の設定を丸ごと消す """
-    
+
     # version はないとバグる
     return {k: v for k, v in d.items() if k.startswith("key_") or k.startswith("version")}
 
 
 def remove_options(d):
     """ 設定を丸ごと消す """
-    
+
     # version はないとバグる
     return {k: v for k, v in d.items() if k.startswith("version")}
 
 
 def load_options_from_txt(file_path):
     """ txtから設定の読み込み """
-    
+
     with open(file_path, "r", encoding="utf-8") as f:
         s = f.read().strip()
 
@@ -106,7 +97,7 @@ def update_json_file(file_path, file_reset):
     # 現在の設定の読み込み
     if not file_reset:
         with open(file_path, "r", encoding="utf-8") as f:
-            try: 
+            try:
                 new_options = json.load(f)
             except json.JSONDecodeError:
                 new_options = {}
@@ -128,11 +119,11 @@ def update_json_file(file_path, file_reset):
 
 def update_properties_file(file_path, file_reset):
     """ propertiesの設定ファイルを更新する """
-    
+
     # 現在の設定の読み込み
     if not file_reset:
         new_options = load_options_from_properties(file_path)
-    
+
     # 設定をリセット
     else:
         new_options = {}
@@ -149,24 +140,69 @@ def update_properties_file(file_path, file_reset):
         f.write("\n".join([f"{k}={v}" for k, v in new_options.items()]))
 
 
-# 設定対象を読み込む
-print("読み込む設定ファイルを指定してください")
+def input_game_dir():
+    """ ゲームディレクトリを読み込む """
 
-if getattr(sys, 'frozen', False):
-    application_path = path.dirname(sys.executable)
-elif __file__:
-    application_path = path.dirname(__file__)
+    # 設定対象を読み込む
+    print("ゲームディレクトリ(.minecraft や minecraft)を指定してください")
 
-SETTINGS = None
-SETTINGS = tkinter.filedialog.askopenfilename(
-    typevariable="json", initialdir=path.abspath(application_path))
+    if getattr(sys, 'frozen', False):
+        initialdir = path.dirname(sys.executable)
+    elif __file__:
+        initialdir = path.dirname(__file__)
 
-if SETTINGS == "":
-    print("ファイルが指定されませんでした")
-    input()
-    sys.exit()
+    game_dir = tkinter.filedialog.askdirectory(
+        title="ゲームディレクトリを指定してください",
+        initialdir=path.abspath(initialdir)
+    )
 
-print(f"読み込む設定ファイル: {SETTINGS}")
+    if game_dir == "":
+        print("ゲームディレクトリ(.minecraft や minecraft)が指定されませんでした")
+        input()
+        sys.exit()
+
+    if not path.exists(path.join(game_dir, "options.txt")):
+        print(f"{game_dir} はおそらくゲームディレクトリではありません")
+        input()
+        sys.exit()
+
+    print(f"ゲームディレクトリ: {game_dir}")
+
+    return game_dir
+
+
+def input_settings():
+    """ 設定ファイルを読み込む """
+
+    # 設定対象を読み込む
+    print("設定ファイルを指定してください")
+
+    if getattr(sys, 'frozen', False):
+        initialdir = path.dirname(sys.executable)
+    elif __file__:
+        initialdir = path.dirname(__file__)
+
+    settings = tkinter.filedialog.askopenfilename(
+        title="設定ファイルを指定してください",
+        initialdir=path.abspath(initialdir),
+        filetypes=[("JSON", "*.json")]
+    )
+
+    if settings == "":
+        print("ファイルが指定されませんでした")
+        input()
+        sys.exit()
+
+    print(f"設定ファイル: {settings}")
+
+    return settings
+
+
+# ゲームディレクトリの読み込み
+GAME_DIR = input_game_dir()
+
+# 設定ファイルを読み込み
+SETTINGS = input_settings()
 
 with open(SETTINGS, "r", encoding="utf-8") as f:
     settings = json.load(f)
@@ -199,7 +235,7 @@ for setting in settings["settings"]:
         update_properties_file(file_path, file_reset)
 
     print(f"{file_path} を {setting['name']} に基づいて更新しました")
-    
+
     # リセット済みファイルを保存
     if file_reset:
         already_reset_files.append(file_path)
