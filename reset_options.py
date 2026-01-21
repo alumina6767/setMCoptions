@@ -127,7 +127,7 @@ def update_json_file(file_path, file_reset):
     # 設定の更新
     for o in setting["options"]:
         my_merger.merge(new_options, o["option"])
-    print(new_options)
+
     # 設定を保存する
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(new_options, f, indent=2)
@@ -237,7 +237,6 @@ for setting in settings["settings"]:
 
     # リセット済みかどうか
     file_reset = False if file_path in already_reset_files else True
-    print(f"{file_name}, {already_reset_files}, {file_reset}")
 
     # minecraftのTXTファイルの時
     if file_name == "options.txt":
@@ -257,5 +256,5 @@ for setting in settings["settings"]:
     if file_reset:
         already_reset_files.append(file_path)
 
-print("全ての設定を更新しました")
+print("全ての設定を更新しました Enterを押して終了します")
 input()
