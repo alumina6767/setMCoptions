@@ -4,7 +4,7 @@ import tkinter.filedialog
 import json
 from os import path, makedirs
 import sys
-
+from deepmerge import Merger
 
 def remove_options_without_key_bind(d):
     """ キーバインド以外の設定を丸ごと消す """
@@ -93,7 +93,23 @@ def update_options_txt(file_path, file_reset):
 
 def update_json_file(file_path, file_reset):
     """ JSONの設定ファイルを更新する """
-
+    
+    my_merger = Merger(
+        # pass in a list of tuple, with the
+        # strategies you are looking to apply
+        # to each type.
+        [
+            (list, ["override"]),
+            (dict, ["merge"])
+        ],
+        # next, choose the fallback strategies,
+        # applied to all other types:
+        ["override"],
+        # finally, choose the strategies in
+        # the case where the types conflict:
+        ["override"]
+    )
+    
     # 現在の設定の読み込み
     if not file_reset:
         with open(file_path, "r", encoding="utf-8") as f:
@@ -110,8 +126,8 @@ def update_json_file(file_path, file_reset):
 
     # 設定の更新
     for o in setting["options"]:
-        new_options = {**new_options, **o["option"]}
-
+        my_merger.merge(new_options, o["option"])
+    print(new_options)
     # 設定を保存する
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(new_options, f, indent=2)
@@ -220,7 +236,8 @@ for setting in settings["settings"]:
     check_exists(file_path)
 
     # リセット済みかどうか
-    file_reset = True if file_path in already_reset_files else False
+    file_reset = False if file_path in already_reset_files else True
+    print(f"{file_name}, {already_reset_files}, {file_reset}")
 
     # minecraftのTXTファイルの時
     if file_name == "options.txt":

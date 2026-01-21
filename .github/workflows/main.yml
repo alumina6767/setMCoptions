@@ -36,6 +36,9 @@ jobs:
     - name: Show pip list
       run: pip list
   
+    # deepmergeのインストール
+    - name: Install deepmerge
+      run: pip install deepmerge
     - run: pyinstaller reset_options.py --onefile --icon=icon.ico
     # Optionally verify that it works (provided that it does not need user interaction)
     - uses: actions/upload-artifact@v4.6.2
